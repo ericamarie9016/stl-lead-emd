@@ -1,0 +1,56 @@
+---
+title: "Lead Inequity"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(here)
+```
+
+### Read in and explore data
+
+```{r}
+stl_lead <- read_delim(here("data", "stl_blood_lead.csv")) %>%
+  clean_names()
+
+head(stl_lead)
+```
+
+## New data frame and new column
+
+```{r}
+stl_lead_prop <- stl_lead %>%
+  mutate(prop_white = ((white / total_pop) * 100))
+
+```
+
+## Create scatterplot
+
+I do not notice a trend with this data
+
+```{r}
+elvated_graph <- ggplot(data = stl_lead_prop,
+       aes(x = pct_elevated,
+           y = prop_white,
+           color = pct_elevated)) +
+  geom_point(size = 1)
+elvated_graph
+
+ggsave(here("figs", "elvated_graph.png"), height = 5, width = 6)
+```
+
+## Create histogram
+
+```{r}
+elevated_hist <- ggplot(data = stl_lead_prop, 
+      aes(x = pct_elevated)) +
+  geom_histogram(color = "blue",
+                 fill = "orange")
+
+elevated_hist
+
+ggsave(here("figs", "elevated_hist.jpg"))
+```
